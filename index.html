@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#eee9dc">
+  <title>Home</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: #eee9dc;
+      --surface: rgba(247, 243, 232, .88);
+      --ink: #292720;
+      --muted: #716b5e;
+      --line: #c9c0ad;
+      --accent: #39766b;
+      --accent-soft: #dcebe3;
+      font-family: "Baloo 2", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      min-height: 100vh;
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(ellipse at 86% 9%, rgba(148, 198, 185, .3), transparent 34%),
+        radial-gradient(ellipse at 8% 57%, rgba(232, 183, 151, .2), transparent 31%),
+        var(--paper);
+    }
+    a { color: inherit; }
+    .wrap { width: min(1060px, calc(100% - 40px)); margin: 0 auto; }
+    .topbar { min-height: 70px; display: flex; align-items: center; }
+    .brand {
+      color: var(--ink);
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 25px;
+      font-weight: 700;
+      letter-spacing: -.09em;
+      line-height: 1;
+      text-decoration: none;
+    }
+    main { max-width: 740px; padding: clamp(42px, 9vh, 88px) 0 64px; }
+    .intro { max-width: 660px; margin-bottom: 26px; }
+    h1 { margin: 0; font-size: clamp(34px, 5vw, 50px); line-height: 1.08; letter-spacing: -.035em; }
+    .intro p { margin: 12px 0 0; color: var(--muted); font-size: 17px; line-height: 1.55; }
+    .what-it-does { margin: 0 0 12px; font-size: 17px; font-weight: 700; }
+    .features { display: grid; gap: 8px; margin: 0 0 22px; padding: 0; list-style: none; }
+    .features li { color: var(--muted); font-size: 15px; line-height: 1.5; }
+    .features strong { color: var(--ink); font-weight: 700; }
+    .try-it { margin: 0 0 8px; color: var(--muted); font-size: 14px; }
+    .start-list { display: flex; flex-wrap: wrap; gap: 12px 30px; }
+    .start-option {
+      display: flex;
+      align-items: center;
+      min-height: 42px;
+      color: var(--accent);
+      font-size: 17px;
+      font-weight: 700;
+      text-underline-offset: 4px;
+    }
+    .start-option:hover { text-decoration-thickness: 2px; }
+    .start-option:focus-visible, .brand:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 3px;
+    }
+    @media (max-width: 540px) {
+      .wrap { width: min(100% - 28px, 1060px); }
+      .topbar { min-height: 62px; }
+      main { padding-top: 48px; }
+      .start-list { flex-direction: column; align-items: flex-start; gap: 4px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="wrap topbar" aria-label="Main navigation">
+    <a class="brand" href="/" aria-label="Fineprint home">fineprint</a>
+  </nav>
+  <main class="wrap">
+    <section class="intro" aria-labelledby="welcome-heading">
+      <h1 id="welcome-heading">Ever open a document and immediately start skimming?</h1>
+      <p>Same. We made Fine Print at a hackathon for the pile of everyday paperwork that somehow expects everyone to speak fluent legalese.</p>
+      <p>Drop in a lease, waiver, privacy policy, or whatever you’re trying to get through. Fine Print gives you the gist, translates the confusing bits, and helps you spot dates, costs, and terms worth a second look. Then you can ask follow-up questions without starting over or hunting through the whole document.</p>
+    </section>
+    <section aria-labelledby="what-it-does-heading">
+      <h2 class="what-it-does" id="what-it-does-heading">Basically, you can:</h2>
+      <ul class="features">
+        <li><strong>Get the gist</strong> — the main points, minus the wall of text.</li>
+        <li><strong>Translate a clause</strong> — get a simple explanation of the bit you keep rereading.</li>
+        <li><strong>Know what to double-check</strong> — dates, money, and terms that might deserve another look.</li>
+        <li><strong>Keep asking</strong> — follow up about the same document in a little back-and-forth chat.</li>
+      </ul>
+    </section>
+    <p class="intro">PDF, TXT, Markdown, or pasted text all work. Pick the kind of help you want; Fine Print sends the document to Hack Club AI when you ask for an explanation. It’s a helpful starting point, not a lawyer—so skip anything you don’t want to share.</p>
+    <p class="try-it">Made for a hackathon, for everyone who has ever opened a document and thought, “I am not reading all that.”</p>
+    <nav class="start-list" aria-label="Start with a document">
+      <a class="start-option" href="/documents#upload-document">Choose a file</a>
+      <a class="start-option" href="/documents#document-text">Paste text</a>
+    </nav>
+  </main>
+  <script>
+    if (!['localhost', '127.0.0.1'].includes(window.location.hostname)) {
+      for (const link of document.querySelectorAll('.start-option')) {
+        link.href = new URL(link.getAttribute('href'), 'https://app.koditra.xyz').href;
+      }
+    }
+  </script>
+</body>
+</html>

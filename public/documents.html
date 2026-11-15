@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#eee9dc">
+  <title>Home</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: #eee9dc;
+      --surface: #f7f3e8;
+      --ink: #292720;
+      --muted: #716b5e;
+      --line: #c9c0ad;
+      --accent: #39766b;
+      --accent-soft: #dcebe3;
+      --red: #a63e35;
+      font-family: "Baloo 2", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background-color: var(--paper);
+      background-image:
+        url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.16'/%3E%3C/svg%3E"),
+        radial-gradient(ellipse at 86% 9%, rgba(148, 198, 185, .36), transparent 34%),
+        radial-gradient(ellipse at 8% 57%, rgba(232, 183, 151, .24), transparent 31%);
+      background-size: 180px 180px, auto, auto;
+      background-attachment: fixed;
+    }
+    #paper-crackle {
+      position: fixed;
+      z-index: 0;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      opacity: .045;
+      pointer-events: none;
+    }
+    body > :not(#paper-crackle) {
+      position: relative;
+      z-index: 1;
+    }
+    button, input, textarea { font: inherit; }
+    button, label[for="file-input"] { cursor: pointer; }
+    a { color: inherit; }
+    .wrap { width: min(1180px, calc(100% - 40px)); margin: 0 auto; }
+    .topbar {
+      min-height: 66px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(41, 39, 32, .35);
+    }
+    .brand {
+      position: relative;
+      display: inline-block;
+      color: var(--ink);
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 25px;
+      font-weight: 700;
+      letter-spacing: -.09em;
+      line-height: 1;
+      text-decoration: none;
+    }
+    .brand:focus-visible { outline: 2px solid var(--accent); outline-offset: 7px; }
+    .back { color: var(--muted); font-size: 13px; text-decoration-thickness: 1px; }
+    main {
+      position: relative;
+      margin-top: 18px !important;
+      margin-bottom: 36px !important;
+      padding: 23px 0 0;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
+    }
+    .eyebrow {
+      color: var(--accent);
+      font-family: ui-monospace, "SFMono-Regular", Consolas, monospace;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+    h1 { margin: 3px 0 0; font-size: clamp(27px, 4vw, 36px); letter-spacing: -.035em; font-weight: 700; }
+    .intro { max-width: 700px; margin: 2px 0 0; color: var(--muted); font-size: 14px; line-height: 1.5; }
+    .layout { display: grid; grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr); gap: 18px; margin-top: 22px; align-items: start; }
+    .card {
+      overflow: hidden;
+      border-radius: 18px;
+      background: rgba(247, 243, 232, .88);
+    }
+    .card-heading {
+      display: flex;
+      align-items: center;
+      min-height: 44px;
+      padding: 10px 15px;
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .card-body { padding: 4px 16px 16px; }
+    .dropzone {
+      display: block;
+      border: 0;
+      border-radius: 14px;
+      padding: 21px 14px;
+      text-align: center;
+      background: rgba(233, 225, 209, .7);
+      transition: background-color .15s;
+    }
+    .dropzone:hover, .dropzone:focus-within { background: var(--accent-soft); }
+    .dropzone strong { display: block; font-size: 15px; }
+    .dropzone span { display: block; margin-top: 5px; color: var(--muted); font-size: 12px; line-height: 1.5; }
+    #file-input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+    .file-name {
+      display: none;
+      margin-top: 9px;
+      padding: 5px 0;
+      color: var(--muted);
+      font-size: 12px;
+      overflow-wrap: anywhere;
+    }
+    .or {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 14px 0;
+      color: var(--muted);
+      font-family: ui-monospace, "SFMono-Regular", Consolas, monospace;
+      font-size: 9px;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+    .or::before, .or::after { content: ""; height: 1px; flex: 1; background: var(--line); }
+    textarea, input[type="text"] {
+      width: 100%;
+      border: 1px solid transparent;
+      border-radius: 12px;
+      padding: 11px 12px;
+      color: var(--ink);
+      background: rgba(255, 254, 250, .6);
+      outline: none;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+    textarea:focus, input[type="text"]:focus { border-color: var(--accent); }
+    #document-text {
+      min-height: 155px;
+      padding: 12px;
+      resize: vertical;
+      background-color: rgba(255, 254, 250, .6);
+      line-height: 1.6;
+    }
+    .label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .action-list { display: grid; grid-template-columns: 1fr; gap: 6px; margin-top: 12px; }
+    .action {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      padding: 9px 11px;
+      border: 0;
+      border-radius: 12px;
+      color: var(--ink);
+      background: transparent;
+      text-align: left;
+      font-size: 13px;
+      transition: background-color .15s;
+    }
+    .action:hover, .action[aria-pressed="true"] { background: var(--accent-soft); }
+    .primary {
+      width: 100%;
+      margin-top: 11px;
+      padding: 11px 15px;
+      border: 0;
+      border-radius: 12px;
+      color: #fffaf0;
+      background: var(--accent);
+      font-size: 14px;
+      font-weight: 700;
+      transition: background-color .15s;
+    }
+    .primary:hover { background: #2e6259; }
+    button:disabled { cursor: wait; opacity: .58; }
+    .error { display: none; margin: 10px 0 0; padding: 7px 9px; border-left: 2px solid var(--red); color: var(--red); background: rgba(166, 62, 53, .07); font-size: 12px; line-height: 1.5; }
+    .output-empty {
+      display: grid;
+      min-height: 245px;
+      align-content: center;
+      justify-items: center;
+      padding: 28px 20px;
+      color: var(--muted);
+      text-align: center;
+      font-size: 13px;
+      line-height: 1.7;
+    }
+    .result {
+      min-height: 245px;
+      padding: 18px;
+      font-size: 14px;
+      line-height: 1.65;
+      overflow-wrap: anywhere;
+    }
+    .result:empty { display: none; }
+    .markdown > :first-child { margin-top: 0; }
+    .markdown > :last-child { margin-bottom: 0; }
+    .markdown h1, .markdown h2, .markdown h3, .markdown h4 { margin: 1.1em 0 .45em; line-height: 1.25; }
+    .markdown h1 { font-size: 1.5em; }
+    .markdown h2 { font-size: 1.3em; }
+    .markdown h3, .markdown h4 { font-size: 1.1em; }
+    .markdown p { margin: 0 0 1em; }
+    .markdown ul, .markdown ol { margin: .25em 0 1em; padding-left: 1.5em; }
+    .markdown blockquote { margin: .75em 0; padding-left: 1em; border-left: 3px solid var(--accent); color: var(--muted); }
+    .markdown pre { overflow-x: auto; padding: 12px; border: 1px dashed var(--line); background: var(--paper); font-size: .9em; }
+    .markdown code { padding: .08em .25em; background: #e9e1d1; font-family: ui-monospace, monospace; font-size: .9em; }
+    .markdown pre code { padding: 0; background: transparent; }
+    .markdown hr { border: 0; border-top: 1px solid var(--line); }
+    .result-title {
+      padding: 12px 16px 0;
+      color: var(--accent);
+      font-family: ui-monospace, "SFMono-Regular", Consolas, monospace;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+    .chat { padding: 14px 15px 16px; }
+    .chat-head { margin: 0 0 10px; font-size: 14px; font-weight: 700; }
+    .chat-log { display: grid; gap: 8px; max-height: 300px; overflow-y: auto; margin-bottom: 10px; }
+    .bubble { padding: 9px 12px; border-radius: 12px; background: rgba(233, 225, 209, .56); font-size: 13px; line-height: 1.55; overflow-wrap: anywhere; }
+    .bubble.user { margin-left: 22px; background: var(--accent-soft); }
+    .chat-form { display: flex; gap: 7px; }
+    .chat-form input { min-width: 0; }
+    .chat-form button { min-width: 62px; padding: 0 12px; border: 0; border-radius: 12px; color: #fffaf0; background: var(--accent); font-size: 12px; font-weight: 700; }
+    .chat-form button:hover { background: #2e6259; }
+    .footnote { margin: 12px 0 0; color: var(--muted); font-size: 11px; line-height: 1.6; }
+    .loading { color: var(--muted); font-size: 11px; }
+    .file-name, .or, .result-title {
+      font-variant-numeric: tabular-nums;
+    }
+    button:focus-visible, a:focus-visible, textarea:focus-visible, input:focus-visible, .dropzone:focus-within {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+    @media (max-width: 760px) {
+      .layout { grid-template-columns: 1fr; }
+      main { padding: 18px 0 0; }
+      .card-body { padding: 14px; }
+      .topbar { min-height: 64px; }
+      .output-empty { min-height: 170px; }
+      .result { min-height: 0; }
+      #document-text { min-height: 130px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="paper-crackle" aria-hidden="true"></canvas>
+  <nav class="wrap topbar" aria-label="Main navigation">
+    <a class="brand" href="/" aria-label="Fineprint home">fineprint</a>
+  </nav>
+  <main class="wrap">
+    <h1>Let's figure this out.</h1>
+    <p class="intro">Drop in a doc. Get the gist, ask about the weird bits, and leave the legalese behind.</p>
+
+    <div class="layout">
+      <section class="card" aria-labelledby="document-heading">
+        <div class="card-heading" id="document-heading">Your document</div>
+        <div class="card-body">
+          <label class="dropzone" id="upload-document" for="file-input">
+            <strong>Choose a document</strong>
+            <span>PDF, TXT, or Markdown · PDF up to 8 MB<br>Text up to 100,000 characters</span>
+            <input id="file-input" type="file" accept=".pdf,.txt,.md,application/pdf,text/plain,text/markdown">
+          </label>
+          <div class="file-name" id="file-name" aria-live="polite"></div>
+          <div class="or">or, paste it right here</div>
+          <label class="label" for="document-text">the words, please</label>
+          <textarea id="document-text" placeholder="Or paste the text here…"></textarea>
+          <div class="label" style="margin-top:20px">What do you want to know?</div>
+          <div class="action-list" role="group" aria-label="Analysis type">
+            <button type="button" class="action" data-action="summary" aria-pressed="true">
+              <span>Give me the gist</span>
+            </button>
+            <button type="button" class="action" data-action="clauses" aria-pressed="false">
+              <span>Explain the confusing bits</span>
+            </button>
+            <button type="button" class="action" data-action="red-flags" aria-pressed="false">
+              <span>Anything I should look out for?</span>
+            </button>
+          </div>
+          <button type="button" class="primary" id="analyze-button">Read my document</button>
+          <p class="error" id="analysis-error" role="alert"></p>
+        </div>
+      </section>
+
+      <section class="card" aria-labelledby="results-heading">
+        <div class="card-heading" id="results-heading">The explanation</div>
+        <div id="output-empty" class="output-empty">Your explanation will show up here once you add a document.</div>
+        <div id="result-title" class="result-title" hidden></div>
+        <div id="result" class="result" aria-live="polite"></div>
+        <div class="chat">
+          <h2 class="chat-head">Have a question?</h2>
+          <div id="chat-log" class="chat-log" aria-live="polite"></div>
+          <form id="chat-form" class="chat-form">
+            <input id="question" type="text" maxlength="4000" placeholder="Ask about your document…" aria-label="Follow-up question" required>
+            <button type="submit" id="chat-button">Send</button>
+          </form>
+          <p class="error" id="chat-error" role="alert"></p>
+          <p class="footnote">When you ask for an analysis or question, your document is sent to Hack Club AI. This can help explain the text, but it isn't legal advice.</p>
+        </div>
+      </section>
+    </div>
+  </main>
+  <script>
+    const fileInput = document.getElementById('file-input');
+    const documentText = document.getElementById('document-text');
+    const fileName = document.getElementById('file-name');
+    const analysisError = document.getElementById('analysis-error');
+    const chatError = document.getElementById('chat-error');
+    const result = document.getElementById('result');
+    const resultTitle = document.getElementById('result-title');
+    const outputEmpty = document.getElementById('output-empty');
+    const chatLog = document.getElementById('chat-log');
+    const analyzeButton = document.getElementById('analyze-button');
+    const chatButton = document.getElementById('chat-button');
+    let selectedAction = 'summary';
+    let pdfBase64 = '';
+    let history = [];
+
+    const actionLabels = {
+      summary: 'The gist',
+      clauses: 'The confusing bits',
+      'red-flags': 'Things to side-eye',
+    };
+
+    function showError(element, message) {
+      element.textContent = message;
+      element.style.display = message ? 'block' : 'none';
+    }
+
+    function appendInlineMarkdown(parent, text) {
+      const pattern = /(\*\*.+?\*\*|__.+?__|~~.+?~~|`[^`]+`|\*[^*]+\*|_[^_]+_|\[[^\]]+\]\((?:[^()]|\([^()]*\))*\))/g;
+      let cursor = 0;
+      for (const match of text.matchAll(pattern)) {
+        parent.append(document.createTextNode(text.slice(cursor, match.index)));
+        const token = match[0];
+        let element;
+        let content;
+        if (token.startsWith('**') || token.startsWith('__')) {
+          element = document.createElement('strong');
+          content = token.slice(2, -2);
+        } else if (token.startsWith('~~')) {
+          element = document.createElement('del');
+          content = token.slice(2, -2);
+        } else if (token.startsWith('`')) {
+          element = document.createElement('code');
+          content = token.slice(1, -1);
+        } else if (token.startsWith('*') || token.startsWith('_')) {
+          element = document.createElement('em');
+          content = token.slice(1, -1);
+        } else {
+          content = token.match(/^\[([^\]]+)\]/)[1];
+          element = document.createElement('span');
+          element.title = 'Links are shown as text for safety.';
+        }
+        element.textContent = content;
+        parent.append(element);
+        cursor = match.index + token.length;
+      }
+      parent.append(document.createTextNode(text.slice(cursor)));
+    }
+
+    function renderMarkdown(container, markdown) {
+      container.replaceChildren();
+      container.classList.add('markdown');
+      let paragraph = [];
+      let lists = [];
+      let listBaseIndent = null;
+      let codeLines = null;
+
+      function flushParagraph() {
+        if (!paragraph.length) return;
+        const node = document.createElement('p');
+        appendInlineMarkdown(node, paragraph.join(' '));
+        container.append(node);
+        paragraph = [];
+      }
+
+      function closeList() {
+        lists = [];
+        listBaseIndent = null;
+      }
+
+      for (const line of markdown.split(/\r?\n/)) {
+        if (codeLines) {
+          if (/^\s*```/.test(line)) {
+            const pre = document.createElement('pre');
+            const code = document.createElement('code');
+            code.textContent = codeLines.join('\n');
+            pre.append(code);
+            container.append(pre);
+            codeLines = null;
+          } else {
+            codeLines.push(line);
+          }
+          continue;
+        }
+
+        if (/^\s*```/.test(line)) {
+          flushParagraph();
+          closeList();
+          codeLines = [];
+          continue;
+        }
+        if (!line.trim()) {
+          flushParagraph();
+          continue;
+        }
+
+        const heading = line.match(/^\s{0,3}(#{1,6})\s+(.+?)\s*#*\s*$/);
+        if (heading) {
+          flushParagraph();
+          closeList();
+          const node = document.createElement(`h${heading[1].length}`);
+          appendInlineMarkdown(node, heading[2]);
+          container.append(node);
+          continue;
+        }
+
+        if (/^\s{0,3}(---+|\*\*\*+|___+)\s*$/.test(line)) {
+          flushParagraph();
+          closeList();
+          container.append(document.createElement('hr'));
+          continue;
+        }
+
+        const quote = line.match(/^\s{0,3}>\s?(.*)$/);
+        if (quote) {
+          flushParagraph();
+          closeList();
+          const node = document.createElement('blockquote');
+          appendInlineMarkdown(node, quote[1]);
+          container.append(node);
+          continue;
+        }
+
+        const item = line.match(/^(\s*)([-+*]|\d+[.)])\s+(.+)$/);
+        if (item) {
+          flushParagraph();
+          const indent = item[1].replace(/\t/g, '    ').length;
+          if (listBaseIndent === null) listBaseIndent = indent;
+          const level = Math.max(0, Math.floor((indent - listBaseIndent) / 2));
+          const marker = item[2];
+          const ordered = /^\d/.test(marker);
+          const listType = ordered ? 'ol' : 'ul';
+
+          lists = lists.slice(0, level + 1);
+          while (lists.length <= level) {
+            const parent = lists.at(-1);
+            if (parent && !parent.lastItem) break;
+            const element = document.createElement(lists.length === level ? listType : 'ul');
+            if (lists.length === level && ordered) {
+              const start = Number.parseInt(marker, 10);
+              if (Number.isSafeInteger(start) && start !== 1) element.start = start;
+            }
+            if (lists.length === 0) {
+              container.append(element);
+            } else {
+              parent.lastItem.append(element);
+            }
+            lists.push({ element, type: element.tagName.toLowerCase(), lastItem: null, indent });
+          }
+
+          let currentList = lists[level];
+          if (!currentList || currentList.type !== listType) {
+            lists = lists.slice(0, level);
+            const parent = lists.at(-1);
+            if (parent && !parent.lastItem) break;
+            const element = document.createElement(listType);
+            if (ordered) {
+              const start = Number.parseInt(marker, 10);
+              if (Number.isSafeInteger(start) && start !== 1) element.start = start;
+            }
+            if (parent) {
+              parent.lastItem.append(element);
+            } else {
+              container.append(element);
+            }
+            currentList = { element, type: listType, lastItem: null, indent };
+            lists.push(currentList);
+          }
+          const node = document.createElement('li');
+          appendInlineMarkdown(node, item[3]);
+          currentList.element.append(node);
+          currentList.lastItem = node;
+          continue;
+        }
+
+        const indentation = line.match(/^\s*/)[0].replace(/\t/g, '    ').length;
+        const currentList = lists.at(-1);
+        if (currentList && indentation > currentList.indent && currentList.lastItem) {
+          const continuation = line.trim();
+          currentList.lastItem.append(document.createElement('br'));
+          appendInlineMarkdown(currentList.lastItem, continuation);
+          continue;
+        }
+
+        closeList();
+        paragraph.push(line.trim());
+      }
+
+      if (codeLines) {
+        const pre = document.createElement('pre');
+        const code = document.createElement('code');
+        code.textContent = codeLines.join('\n');
+        pre.append(code);
+        container.append(pre);
+      }
+      flushParagraph();
+    }
+
+    function showResult(title, text) {
+      outputEmpty.hidden = true;
+      resultTitle.hidden = false;
+      resultTitle.textContent = title;
+      renderMarkdown(result, text);
+    }
+
+    async function requestAnalysis(payload) {
+      const response = await fetch('/api/analyze', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(data.error || `Request failed (${response.status}).`);
+      return data.answer;
+    }
+
+    fileInput.addEventListener('change', async () => {
+      const file = fileInput.files[0];
+      if (!file) return;
+      pdfBase64 = '';
+      documentText.value = '';
+      showError(analysisError, '');
+      fileName.style.display = 'block';
+      fileName.textContent = `Reading ${file.name}…`;
+      try {
+        if (file.size === 0) throw new Error('This file is empty.');
+        if (file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf')) {
+          if (file.size > 8 * 1024 * 1024) throw new Error('PDFs must be 8 MB or smaller.');
+          const bytes = new Uint8Array(await file.arrayBuffer());
+          let binary = '';
+          for (let offset = 0; offset < bytes.length; offset += 0x8000) {
+            binary += String.fromCharCode(...bytes.subarray(offset, offset + 0x8000));
+          }
+          pdfBase64 = btoa(binary);
+          fileName.textContent = `${file.name} · PDF ready`;
+        } else {
+          const text = await file.text();
+          if (text.length > 100_000) throw new Error('Text documents must be 100,000 characters or fewer.');
+          documentText.value = text;
+          fileName.textContent = `${file.name} · ${text.length.toLocaleString()} characters`;
+        }
+        history = [];
+        chatLog.replaceChildren();
+        result.textContent = '';
+        resultTitle.hidden = true;
+        outputEmpty.hidden = false;
+      } catch (error) {
+        pdfBase64 = '';
+        fileName.textContent = '';
+        fileName.style.display = 'none';
+        showError(analysisError, error.message);
+      }
+    });
+
+    documentText.addEventListener('input', () => {
+      pdfBase64 = '';
+      fileInput.value = '';
+      fileName.style.display = 'none';
+      history = [];
+      chatLog.replaceChildren();
+    });
+
+    document.querySelectorAll('[data-action]').forEach((button) => {
+      button.addEventListener('click', () => {
+        selectedAction = button.dataset.action;
+        document.querySelectorAll('[data-action]').forEach((item) => {
+          item.setAttribute('aria-pressed', String(item === button));
+        });
+      });
+    });
+
+    function documentPayload() {
+      const text = documentText.value.trim();
+      if (text) return { document: text };
+      if (pdfBase64) return { pdfBase64 };
+      throw new Error('Choose a document or paste its text first.');
+    }
+
+    analyzeButton.addEventListener('click', async () => {
+      showError(analysisError, '');
+      try {
+        const document = documentPayload();
+        analyzeButton.disabled = true;
+        analyzeButton.textContent = 'Reading…';
+        showResult(actionLabels[selectedAction], 'Reading your document…');
+        const answer = await requestAnalysis({ ...document, action: selectedAction });
+        showResult(actionLabels[selectedAction], answer);
+        history = [];
+        chatLog.replaceChildren();
+      } catch (error) {
+        showError(analysisError, error.message);
+        if (error.message !== 'Choose a document or paste its text first.') {
+          result.textContent = '';
+          resultTitle.hidden = true;
+          outputEmpty.hidden = false;
+        }
+      } finally {
+        analyzeButton.disabled = false;
+        analyzeButton.textContent = 'Read my document';
+      }
+    });
+
+    document.getElementById('chat-form').addEventListener('submit', async (event) => {
+      event.preventDefault();
+      showError(chatError, '');
+      let documentPayloadValue;
+      try {
+        documentPayloadValue = documentPayload();
+      } catch (error) {
+        showError(chatError, error.message);
+        return;
+      }
+      const questionInput = document.getElementById('question');
+      const question = questionInput.value.trim();
+      if (!question) return;
+
+      chatButton.disabled = true;
+      const waiting = document.createElement('div');
+      waiting.className = 'loading';
+      waiting.textContent = 'Writing a reply…';
+      chatLog.append(waiting);
+      chatLog.scrollTop = chatLog.scrollHeight;
+      try {
+        const answer = await requestAnalysis({
+          ...documentPayloadValue,
+          action: 'chat',
+          history,
+          question,
+        });
+        waiting.remove();
+        const userBubble = document.createElement('div');
+        userBubble.className = 'bubble user';
+        userBubble.textContent = question;
+        const assistantBubble = document.createElement('div');
+        assistantBubble.className = 'bubble markdown';
+        renderMarkdown(assistantBubble, answer);
+        chatLog.append(userBubble, assistantBubble);
+        history.push({ role: 'user', content: question }, { role: 'assistant', content: answer });
+        questionInput.value = '';
+        chatLog.scrollTop = chatLog.scrollHeight;
+      } catch (error) {
+        waiting.remove();
+        showError(chatError, error.message);
+      } finally {
+        chatButton.disabled = false;
+      }
+    });
+  </script>
+  <script>
+    const paperCrackle = document.getElementById('paper-crackle');
+    const paperContext = paperCrackle.getContext('2d', { alpha: false });
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const texture = document.createElement('canvas');
+    const textureContext = texture.getContext('2d');
+    let textureFrame;
+    let lastTextureUpdate = 0;
+
+    function resizePaperTexture() {
+      const scale = Math.min(window.devicePixelRatio || 1, 1.5) * 0.65;
+      texture.width = Math.max(1, Math.ceil(window.innerWidth * scale));
+      texture.height = Math.max(1, Math.ceil(window.innerHeight * scale));
+      paperCrackle.width = Math.max(1, Math.ceil(window.innerWidth * Math.min(window.devicePixelRatio || 1, 1.5)));
+      paperCrackle.height = Math.max(1, Math.ceil(window.innerHeight * Math.min(window.devicePixelRatio || 1, 1.5)));
+      paperContext.setTransform(
+        paperCrackle.width / texture.width,
+        0,
+        0,
+        paperCrackle.height / texture.height,
+        0,
+        0
+      );
+      drawPaperTexture();
+    }
+
+    function drawPaperTexture() {
+      const image = textureContext.createImageData(texture.width, texture.height);
+      for (let pixel = 0; pixel < image.data.length; pixel += 4) {
+        const shade = Math.random() < 0.5 ? 0 : 255;
+        image.data[pixel] = shade;
+        image.data[pixel + 1] = shade;
+        image.data[pixel + 2] = shade;
+        image.data[pixel + 3] = 255;
+      }
+      textureContext.putImageData(image, 0, 0);
+      paperContext.drawImage(texture, 0, 0);
+    }
+
+    function animatePaperTexture(timestamp) {
+      if (timestamp - lastTextureUpdate >= 110) {
+        drawPaperTexture();
+        lastTextureUpdate = timestamp;
+      }
+      textureFrame = window.requestAnimationFrame(animatePaperTexture);
+    }
+
+    function updatePaperMotion() {
+      if (textureFrame) window.cancelAnimationFrame(textureFrame);
+      if (reducedMotion.matches) {
+        drawPaperTexture();
+      } else {
+        lastTextureUpdate = 0;
+        textureFrame = window.requestAnimationFrame(animatePaperTexture);
+      }
+    }
+
+    window.addEventListener('resize', resizePaperTexture);
+    reducedMotion.addEventListener('change', updatePaperMotion);
+    resizePaperTexture();
+    updatePaperMotion();
+  </script>
+</body>
+</html>

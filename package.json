@@ -1,0 +1,13 @@
+{
+  "name": "fine-print",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A local document assistant powered exclusively by Hack Club AI.",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "pdf-parse": "1.1.1"
+  }
+}
