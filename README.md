@@ -42,29 +42,39 @@ The workflow in `.github/workflows/pages.yml` publishes only `index.html`, so se
 
 1. In the repository, open **Settings → Pages** and choose **GitHub Actions** as the deployment source.
 2. In the Pages settings, add `koditra.xyz` as the custom domain.
-3. In GoDaddy DNS, point the apex (`@`) to GitHub Pages using the A records in [GitHub's custom-domain guide](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site).
-4. Add an `app` A record pointing to your VM's public IPv4 address. Add a `www` CNAME to `koditra.github.io` if you want `www.koditra.xyz` too.
-5. Wait for DNS to update, then enable **Enforce HTTPS** in the Pages settings.
+3. In GoDaddy DNS, point the apex (`@`) to GitHub Pages with these four A records:
+
+   ```text
+   185.199.108.153
+   185.199.109.153
+   185.199.110.153
+   185.199.111.153
+   ```
+
+   Remove any GoDaddy parking records that conflict. Add a `www` CNAME to `koditra.github.io` if you want `www.koditra.xyz` too. See [GitHub's custom-domain guide](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site).
+4. Wait for DNS to update, then enable **Enforce HTTPS** in the Pages settings.
 
 ### Run the app on the VM
 
-These steps assume the VM is reachable as `ash@hackclub.app` and runs Ubuntu or a similar Linux distribution. If that is the SSH login you were given, connect from your computer's terminal:
+The Nest dashboard says the VM is reachable as `ash@hackclub.app` and that custom domains should point to `ash.hackclub.app`. Connect from your computer's terminal:
 
 ```sh
 ssh ash@hackclub.app
 ```
 
-Install Node.js 18 or newer and Git on the VM, then clone and start the app:
+On Debian, install Git and Node.js 18 or newer, then clone the app:
 
 ```sh
+sudo apt update
+sudo apt install -y git nodejs npm
+node --version
 git clone https://github.com/koditra/fineprint.git
 cd fineprint
 npm ci
 nano .env.local
 chmod 600 .env.local
-npm start
 ```
 
-Put `HACKCLUB_AI_API_KEY=your_key_here` in the `.env.local` file in the editor; do not paste the real key into chat or commit it. The VM's firewall should allow HTTP and HTTPS. Point Nginx (or your VM provider's reverse proxy) for `app.koditra.xyz` to `http://127.0.0.1:3000`, then enable HTTPS there. For a real demo, run Node under a process manager such as systemd so it restarts after logout or reboot.
+Put `HACKCLUB_AI_API_KEY=your_key_here` in `.env.local` using the editor; never paste the real key into chat or commit it. Then start the app with `npm start`. The server listens on `PORT` if set, otherwise port `3000`.
 
-The DNS setup needs your VM's public IPv4 address, and the VM steps need working SSH access. If `ssh ash@hackclub.app` is not the actual login command, use the SSH host and username shown by your VM provider.
+In the Nest dashboard, add `app.koditra.xyz` under **Domains** and set its target port to `3000` (or set `PORT` to match another target port). In GoDaddy DNS, add an `app` CNAME pointing to `ash.hackclub.app`, as Nest requires. Keep the app process running with the VM's project runner or a process manager such as systemd. Once DNS has updated, `https://app.koditra.xyz` should open the working app.
